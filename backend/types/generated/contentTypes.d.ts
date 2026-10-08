@@ -485,6 +485,7 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    bundleNote: Schema.Attribute.Text;
     category: Schema.Attribute.Relation<'manyToOne', 'api::category.category'>;
     color: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
@@ -510,6 +511,37 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     sku: Schema.Attribute.String;
     slug: Schema.Attribute.UID<'name'>;
     stock: Schema.Attribute.Integer;
+    sub_type: Schema.Attribute.Relation<'oneToOne', 'api::sub-type.sub-type'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiSubTypeSubType extends Struct.CollectionTypeSchema {
+  collectionName: 'sub_types';
+  info: {
+    displayName: 'SubType';
+    pluralName: 'sub-types';
+    singularName: 'sub-type';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    category: Schema.Attribute.Relation<'oneToOne', 'api::category.category'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::sub-type.sub-type'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    slug: Schema.Attribute.UID<'name'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1029,6 +1061,7 @@ declare module '@strapi/strapi' {
       'admin::user': AdminUser;
       'api::category.category': ApiCategoryCategory;
       'api::product.product': ApiProductProduct;
+      'api::sub-type.sub-type': ApiSubTypeSubType;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

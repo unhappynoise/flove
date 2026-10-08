@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sub_types",
+  "info": {
+    "singularName": "sub-type",
+    "pluralName": "sub-types",
+    "displayName": "SubType"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "name"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::category.category"
+    }
+  }
+}

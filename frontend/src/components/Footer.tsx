@@ -32,6 +32,11 @@ export default function Footer() {
                 Accessories
               </Link>
             </li>
+            <li>
+              <Link href="/category/fragrances" className="hover:text-gold-light transition-colors">
+                Fragrances
+              </Link>
+            </li>
           </ul>
         </div>
 

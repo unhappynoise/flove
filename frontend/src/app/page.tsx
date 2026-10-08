@@ -1,12 +1,20 @@
 import Link from "next/link";
 import { getFeaturedProducts, getCategories } from "@/lib/strapi";
 import ProductCard from "@/components/ProductCard";
+import PriceAccordion from "@/components/PriceAccordion";
+import PriceScrollGrid from "@/components/PriceScrollGrid";
+import { priceGuide } from "@/data/priceGuide";
 
 export default async function Home() {
   const [featuredProducts, categories] = await Promise.all([
     getFeaturedProducts(),
     getCategories(),
   ]);
+
+  // Temporary split for preview — first half accordion, second half scroll grid
+  const half = Math.ceil(priceGuide.length / 2);
+  const accordionSet = priceGuide.slice(0, half);
+  const scrollSet = priceGuide.slice(half);
 
   return (
     <div>
@@ -25,12 +33,34 @@ export default async function Home() {
             things.
           </p>
           <Link
-            href="/category/footwear"
+            href="/shop"
             className="inline-block bg-brown text-cream-light font-body text-sm uppercase tracking-wider px-8 py-4 hover:bg-gold transition-colors rounded-sm"
           >
             Shop Now
           </Link>
         </div>
+      </section>
+
+      {/* PRICE GUIDE PREVIEW — accordion style */}
+      <section className="max-w-7xl mx-auto px-6 py-20">
+        <h2 className="font-display text-3xl text-brown text-center mb-4">
+          Price Guide — Accordion Style
+        </h2>
+        <p className="text-center font-body text-sm text-taupe mb-12">
+          (Preview only — click a category to expand)
+        </p>
+        <PriceAccordion categories={accordionSet} />
+      </section>
+
+      {/* PRICE GUIDE PREVIEW — scroll reveal style */}
+      <section className="max-w-7xl mx-auto px-6 py-20 bg-cream">
+        <h2 className="font-display text-3xl text-brown text-center mb-4">
+          Price Guide — Scroll Reveal Style
+        </h2>
+        <p className="text-center font-body text-sm text-taupe mb-12">
+          (Preview only — scroll down slowly to see cards animate in)
+        </p>
+        <PriceScrollGrid categories={scrollSet} />
       </section>
 
       {/* Category showcase */}

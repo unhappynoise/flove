@@ -50,6 +50,11 @@ export type Product = {
 
 export function getImageUrl(image: StrapiImage, size: "thumbnail" | "small" | "medium" | "large" = "medium") {
   const path = image.formats?.[size]?.url || image.url;
+  // Cloudinary (and other providers) return full absolute URLs; local Strapi
+  // storage returns relative paths like "/uploads/xxx.jpg" that need STRAPI_URL prepended.
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
   return `${STRAPI_URL}${path}`;
 }
 

@@ -17,7 +17,12 @@ const config: Core.Config.Middlewares = [
   },
   'strapi::poweredBy',
   'strapi::query',
-  'strapi::body',
+  {
+    name: 'strapi::body',
+    config: {
+      includeUnparsed: true,
+    },
+  },
   'strapi::session',
   'strapi::favicon',
   'strapi::public',

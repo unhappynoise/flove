@@ -131,21 +131,29 @@ export default function CartPage() {
         </span>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-3">
-        <a
-          href={buildWhatsAppMessage()}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex-1 text-center bg-brown text-cream-light font-body text-sm uppercase tracking-wider px-8 py-4 hover:bg-gold transition-colors rounded-sm"
+      <div className="flex flex-col gap-3">
+        <Link
+          href="/checkout"
+          className="text-center bg-brown text-cream-light font-body text-sm uppercase tracking-wider px-8 py-4 hover:bg-gold transition-colors rounded-sm"
         >
-          Checkout via WhatsApp
-        </a>
-        <button
-          onClick={clearCart}
-          className="flex-1 text-center border border-brown text-brown font-body text-sm uppercase tracking-wider px-8 py-4 hover:border-gold hover:text-gold transition-colors rounded-sm"
-        >
-          Clear Cart
-        </button>
+          Pay &amp; Checkout
+        </Link>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <a
+            href={buildWhatsAppMessage()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 text-center border border-brown text-brown font-body text-sm uppercase tracking-wider px-8 py-4 hover:border-gold hover:text-gold transition-colors rounded-sm"
+          >
+            Or Order via WhatsApp
+          </a>
+          <button
+            onClick={clearCart}
+            className="flex-1 text-center border border-brown text-brown font-body text-sm uppercase tracking-wider px-8 py-4 hover:border-gold hover:text-gold transition-colors rounded-sm"
+          >
+            Clear Cart
+          </button>
+        </div>
       </div>
     </div>
   );

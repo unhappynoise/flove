@@ -1,0 +1,56 @@
+{
+  "kind": "collectionType",
+  "collectionName": "orders",
+  "info": {
+    "singularName": "order",
+    "pluralName": "orders",
+    "displayName": "Order"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "customerName": {
+      "type": "string",
+      "required": true
+    },
+    "customerPhone": {
+      "type": "string",
+      "required": true
+    },
+    "deliveryAddress": {
+      "type": "text",
+      "required": true
+    },
+    "items": {
+      "type": "json",
+      "required": true
+    },
+    "totalAmount": {
+      "type": "decimal",
+      "required": true
+    },
+    "paystackReference": {
+      "type": "string",
+      "required": true
+    },
+    "paymentStatus": {
+      "type": "enumeration",
+      "required": true,
+      "default": "pending",
+      "enum": [
+        "pending",
+        "paid",
+        "failed"
+      ]
+    },
+    "notes": {
+      "type": "text"
+    },
+    "customerEmail": {
+      "type": "email",
+      "required": true
+    }
+  }
+}

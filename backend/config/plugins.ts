@@ -62,6 +62,19 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin =>
             },
           },
         },
+    email: {
+      config: {
+        provider: 'strapi-provider-email-brevo',
+        providerOptions: {
+          apiKey: env('BREVO_API_KEY'),
+        },
+        settings: {
+          defaultSenderEmail: env('EMAIL_FROM'),
+          defaultSenderName: 'Flové',
+          defaultReplyTo: env('EMAIL_FROM'),
+        },
+      },
+    },
   };
 };
 

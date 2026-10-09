@@ -111,6 +111,13 @@ export default function Header() {
               {link.label}
             </Link>
           ))}
+          <Link
+            href="/track"
+            onClick={() => setMenuOpen(false)}
+            className="hover:text-gold transition-colors"
+          >
+            Track Order
+          </Link>
           <a
             href="https://wa.me/233595999314"
             target="_blank"

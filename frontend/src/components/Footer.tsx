@@ -46,6 +46,11 @@ export default function Footer() {
           </h4>
           <ul className="space-y-2 font-body text-sm text-cream-light/70">
             <li>
+              <Link href="/track" className="hover:text-gold-light transition-colors">
+                Track Your Order
+              </Link>
+            </li>
+            <li>
               <a
                 href="https://wa.me/233595999314"
                 target="_blank"

@@ -16,7 +16,7 @@ Order reference: ${order.paystackReference}
 Total: GH₵${order.totalAmount}
 Delivery to: ${order.deliveryAddress}
 
-You can track this order anytime using your reference number and phone number.
+You can track this order anytime at ${process.env.FRONTEND_URL}/track using your reference number and phone number.
 
 Thank you for shopping with Flové!
 

@@ -1,4 +1,4 @@
-import { getProducts } from "@/lib/strapi";
+import { getProducts, getProductBySlug } from "@/lib/strapi";
 import { notFound } from "next/navigation";
 import ProductDetails from "./ProductDetails";
 
@@ -13,8 +13,7 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const products = await getProducts();
-  const product = products.find((p) => p.slug === slug);
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     notFound();

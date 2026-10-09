@@ -58,49 +58,57 @@ export function getImageUrl(image: StrapiImage, size: "thumbnail" | "small" | "m
   return `${STRAPI_URL}${path}`;
 }
 
+// Fetches every page of a Strapi collection, so we never hit the default 25-item limit.
+async function fetchAll<T>(path: string): Promise<T[]> {
+  const pageSize = 100;
+  const all: T[] = [];
+  let page = 1;
+  let pageCount = 1;
+
+  do {
+    const sep = path.includes("?") ? "&" : "?";
+    const url = `${STRAPI_URL}${path}${sep}pagination[page]=${page}&pagination[pageSize]=${pageSize}`;
+    const res = await fetch(url, { next: { revalidate: 60 } });
+    if (!res.ok) throw new Error(`Failed to fetch ${path}`);
+    const json = await res.json();
+    all.push(...json.data);
+    pageCount = json.meta?.pagination?.pageCount ?? 1;
+    page++;
+  } while (page <= pageCount);
+
+  return all;
+}
+
+const PRODUCT_POPULATE = "populate=images,category,sub_type";
+
 export async function getProducts(): Promise<Product[]> {
-  const res = await fetch(`${STRAPI_URL}/api/products?pagination[pageSize]=100&populate=images,category,sub_type`, {
-    next: { revalidate: 60 },
-  });
-  if (!res.ok) throw new Error("Failed to fetch products");
+  return fetchAll<Product>(`/api/products?${PRODUCT_POPULATE}`);
+}
+
+export async function getProductBySlug(slug: string): Promise<Product | null> {
+  const res = await fetch(
+    `${STRAPI_URL}/api/products?${PRODUCT_POPULATE}&filters[slug][$eq]=${encodeURIComponent(slug)}&pagination[pageSize]=1`,
+    { next: { revalidate: 60 } }
+  );
+  if (!res.ok) throw new Error("Failed to fetch product");
   const json = await res.json();
-  return json.data;
+  return json.data[0] ?? null;
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
-  const res = await fetch(
-    `${STRAPI_URL}/api/products?pagination[pageSize]=100&populate=images,category,sub_type&filters[featured][$eq]=true`,
-    { next: { revalidate: 60 } }
-  );
-  if (!res.ok) throw new Error("Failed to fetch featured products");
-  const json = await res.json();
-  return json.data;
+  return fetchAll<Product>(`/api/products?${PRODUCT_POPULATE}&filters[featured][$eq]=true`);
 }
 
 export async function getCategories(): Promise<Category[]> {
-  const res = await fetch(`${STRAPI_URL}/api/categories`, {
-    next: { revalidate: 60 },
-  });
-  if (!res.ok) throw new Error("Failed to fetch categories");
-  const json = await res.json();
-  return json.data;
+  return fetchAll<Category>(`/api/categories`);
 }
 
 export async function getProductsByCategory(categorySlug: string): Promise<Product[]> {
-  const res = await fetch(
-    `${STRAPI_URL}/api/products?pagination[pageSize]=100&populate=images,category,sub_type&filters[category][slug][$eq]=${categorySlug}`,
-    { next: { revalidate: 60 } }
+  return fetchAll<Product>(
+    `/api/products?${PRODUCT_POPULATE}&filters[category][slug][$eq]=${encodeURIComponent(categorySlug)}`
   );
-  if (!res.ok) throw new Error("Failed to fetch category products");
-  const json = await res.json();
-  return json.data;
 }
 
 export async function getSubTypes(): Promise<SubType[]> {
-  const res = await fetch(`${STRAPI_URL}/api/sub-types?populate=*`, {
-    next: { revalidate: 60 },
-  });
-  if (!res.ok) throw new Error("Failed to fetch sub-types");
-  const json = await res.json();
-  return json.data;
+  return fetchAll<SubType>(`/api/sub-types?populate=*`);
 }

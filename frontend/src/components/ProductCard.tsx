@@ -9,7 +9,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
   const image = product.images?.[0];
   const hasDiscount = product.discountPrice && product.discountPrice < product.price;
-  const inStock = !!product.stock && product.stock > 0;
+  const inStock = product.stock == null || product.stock > 0;
 
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault();

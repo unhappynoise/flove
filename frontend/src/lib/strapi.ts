@@ -39,7 +39,7 @@ export type Product = {
   discountPrice: number | null;
   sizes: string | null;
   color: string | null;
-  stock: number;
+  stock: number | null;
   featured: boolean;
   sku: string | null;
   sub_type: SubType | null;

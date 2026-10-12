@@ -92,13 +92,11 @@ export default function ProductDetails({ product }: { product: Product }) {
             )}
             <p className="text-brown-light">
               <span className="text-brown font-medium">Availability:</span>{" "}
-              {product.stock > 0
-                ? `In stock (${product.stock} available)`
-                : "Out of stock"}
+              {product.stock == null ? "Available" : product.stock > 0 ? `In stock (${product.stock} available)` : "Out of stock"}
             </p>
           </div>
 
-          {product.stock > 0 && (
+          {(product.stock == null || product.stock > 0) && (
             <div className="flex items-center gap-4 mb-6">
               <span className="font-body text-sm text-brown">Quantity:</span>
               <div className="flex items-center border border-gold/30 rounded-sm">
@@ -113,7 +111,7 @@ export default function ProductDetails({ product }: { product: Product }) {
                 </span>
                 <button
                   onClick={() =>
-                    setQuantity((q) => Math.min(product.stock, q + 1))
+                    setQuantity((q) => Math.min(product.stock ?? 99, q + 1))
                   }
                   className="px-3 py-2 text-brown hover:text-gold transition-colors"
                 >
@@ -126,12 +124,12 @@ export default function ProductDetails({ product }: { product: Product }) {
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleAddToCart}
-              disabled={!product.stock || product.stock <= 0}
+              disabled={product.stock != null && product.stock <= 0}
               className="flex-1 text-center bg-brown text-cream-light font-body text-sm uppercase tracking-wider px-8 py-4 hover:bg-gold transition-colors rounded-sm disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {added
                 ? "Added!"
-                : !product.stock || product.stock <= 0
+                : product.stock != null && product.stock <= 0
                 ? "Out of Stock"
                 : "Add to Cart"}
             </button>

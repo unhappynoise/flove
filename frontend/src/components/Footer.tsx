@@ -62,22 +62,22 @@ export default function Footer() {
             </li>
             <li>
               <a
-                href="https://instagram.com/flove.gh"
+                href="https://www.instagram.com/everything.flove"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-gold-light transition-colors"
               >
-                Instagram @Flove.GH
+                Instagram: Flové.gh
               </a>
             </li>
             <li>
               <a
-                href="https://tiktok.com/@flove.gh"
+                href="https://www.tiktok.com/@everything_flove"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-gold-light transition-colors"
               >
-                TikTok @Flove.GH
+                TikTok: Flové.gh
               </a>
             </li>
           </ul>

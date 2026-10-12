@@ -112,3 +112,23 @@ export async function getProductsByCategory(categorySlug: string): Promise<Produ
 export async function getSubTypes(): Promise<SubType[]> {
   return fetchAll<SubType>(`/api/sub-types?populate=*`);
 }
+
+export function parseSizes(sizes: string | null | undefined): string[] {
+  if (!sizes) return [];
+  const out: string[] = [];
+  for (const raw of sizes.split(",")) {
+    const token = raw.trim();
+    if (!token) continue;
+    const range = token.match(/^(\d+)\s*-\s*(\d+)$/);
+    if (range) {
+      const start = parseInt(range[1], 10);
+      const end = parseInt(range[2], 10);
+      if (end >= start && end - start <= 30) {
+        for (let n = start; n <= end; n++) out.push(String(n));
+        continue;
+      }
+    }
+    out.push(token);
+  }
+  return Array.from(new Set(out));
+}

@@ -61,6 +61,7 @@ export default function CheckoutPage() {
           ...form,
           items: items.map((item) => ({
             productId: item.product.documentId,
+            size: item.size ?? null,
             quantity: item.quantity,
           })),
         }),
@@ -103,7 +104,7 @@ export default function CheckoutPage() {
                 className="flex justify-between font-body text-sm text-brown-light"
               >
                 <span>
-                  {item.product.name} x{item.quantity}
+                  {item.product.name}{item.size ? ` (${item.size})` : ""} x{item.quantity}
                 </span>
                 <span>GHS {price * item.quantity}</span>
               </div>

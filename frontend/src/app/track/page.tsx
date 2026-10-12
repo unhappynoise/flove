@@ -9,7 +9,7 @@ type OrderResult = {
   status: "pending" | "paid" | "failed";
   customerName: string;
   deliveryAddress: string;
-  items: { name: string; quantity: number; unitPrice: number }[];
+  items: { name: string; quantity: number; unitPrice: number; size?: string | null }[];
   totalAmount: number;
 };
 
@@ -104,7 +104,7 @@ export default function TrackOrderPage() {
             {order.items.map((item, i) => (
               <div key={i} className="flex justify-between font-body text-sm text-brown-light">
                 <span>
-                  {item.name} x{item.quantity}
+                  {item.name}{item.size ? ` (${item.size})` : ""} x{item.quantity}
                 </span>
                 <span>GHS {item.unitPrice * item.quantity}</span>
               </div>

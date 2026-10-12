@@ -12,7 +12,7 @@ export default function CartPage() {
   function buildWhatsAppMessage() {
     const lines = items.map((item) => {
       const price = item.product.discountPrice ?? item.product.price;
-      return `• ${item.product.name} x${item.quantity} — GHS ${
+      return `• ${item.product.name}${item.size ? ` (size ${item.size})` : ""} x${item.quantity} — GHS ${
         price * item.quantity
       }`;
     });
@@ -54,7 +54,7 @@ export default function CartPage() {
 
           return (
             <div
-              key={item.product.id}
+              key={`${item.product.id}-${item.size ?? "none"}`}
               className="flex gap-4 items-center border-b border-gold/20 pb-6"
             >
               <div className="w-24 h-24 bg-cream relative overflow-hidden rounded-sm flex-shrink-0">
@@ -81,14 +81,14 @@ export default function CartPage() {
                   {item.product.name}
                 </Link>
                 <p className="font-body text-sm text-brown-light">
-                  GHS {price} each
+                  GHS {price} each{item.size ? ` · Size ${item.size}` : ""}
                 </p>
 
                 <div className="flex items-center gap-3 mt-2">
                   <div className="flex items-center border border-gold/30 rounded-sm">
                     <button
                       onClick={() =>
-                        updateQuantity(item.product.id, item.quantity - 1)
+                        updateQuantity(item.product.id, item.size ?? null, item.quantity - 1)
                       }
                       className="px-2 py-1 text-brown hover:text-gold transition-colors"
                     >
@@ -99,7 +99,7 @@ export default function CartPage() {
                     </span>
                     <button
                       onClick={() =>
-                        updateQuantity(item.product.id, item.quantity + 1)
+                        updateQuantity(item.product.id, item.size ?? null, item.quantity + 1)
                       }
                       className="px-2 py-1 text-brown hover:text-gold transition-colors"
                     >
@@ -108,7 +108,7 @@ export default function CartPage() {
                   </div>
 
                   <button
-                    onClick={() => removeFromCart(item.product.id)}
+                    onClick={() => removeFromCart(item.product.id, item.size ?? null)}
                     className="font-body text-xs text-taupe hover:text-red-600 transition-colors uppercase tracking-wider"
                   >
                     Remove

@@ -1,6 +1,32 @@
 import { factories } from '@strapi/strapi';
 import crypto from 'crypto';
 
+function parseSizes(sizes: string | null | undefined): string[] {
+  if (!sizes) return [];
+  const out: string[] = [];
+  for (const raw of sizes.split(',')) {
+    const token = raw.trim();
+    if (!token) continue;
+    const range = token.match(/^(\d+)\s*-\s*(\d+)$/);
+    if (range) {
+      const start = parseInt(range[1], 10);
+      const end = parseInt(range[2], 10);
+      if (end >= start && end - start <= 30) {
+        for (let n = start; n <= end; n++) out.push(String(n));
+        continue;
+      }
+    }
+    out.push(token);
+  }
+  return Array.from(new Set(out));
+}
+
+function itemLines(order: any): string {
+  return (order.items || [])
+    .map((i: any) => `- ${i.name}${i.size ? ` (size ${i.size})` : ''} x${i.quantity} (GH₵${i.unitPrice} each)`)
+    .join('\n');
+}
+
 async function sendOrderEmails(strapi: any, order: any) {
   const emailService = strapi.plugin('email').service('email');
 
@@ -13,6 +39,9 @@ async function sendOrderEmails(strapi: any, order: any) {
 Your payment was successful!
 
 Order reference: ${order.paystackReference}
+Items:
+${itemLines(order)}
+
 Total: GH₵${order.totalAmount}
 Delivery to: ${order.deliveryAddress}
 
@@ -40,7 +69,7 @@ Deliver to: ${order.deliveryAddress}
 Notes: ${order.notes || '—'}
 
 Items:
-${(order.items || []).map((i: any) => `- ${i.name} x${i.quantity} (GH₵${i.unitPrice} each)`).join('\n')}
+${itemLines(order)}
 
 Total: GH₵${order.totalAmount}`,
     });
@@ -74,7 +103,7 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         customerPhone?: string;
         deliveryAddress?: string;
         notes?: string;
-        items?: { productId: string; quantity: number }[];
+        items?: { productId: string; quantity: number; size?: string | null }[];
       };
 
     if (
@@ -114,6 +143,16 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         return ctx.badRequest(`Not enough stock for ${product.name}`);
       }
 
+      const sizeOptions = parseSizes((product as any).sizes);
+      let size: string | null = null;
+      if (sizeOptions.length > 0) {
+        const chosen = String(item.size ?? '').trim();
+        if (!chosen || !sizeOptions.includes(chosen)) {
+          return ctx.badRequest(`Please choose a valid size for ${product.name}`);
+        }
+        size = chosen;
+      }
+
       const unitPrice = Number(product.discountPrice ?? product.price);
 
       if (!unitPrice || unitPrice <= 0) {
@@ -124,6 +163,7 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
 
       orderItems.push({
         productId: product.documentId,
+        size,
         name: product.name,
         unitPrice,
         quantity,

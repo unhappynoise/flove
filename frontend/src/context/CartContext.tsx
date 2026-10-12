@@ -12,13 +12,14 @@ import { Product } from "@/lib/strapi";
 export type CartItem = {
   product: Product;
   quantity: number;
+  size?: string | null;
 };
 
 type CartContextType = {
   items: CartItem[];
-  addToCart: (product: Product, quantity?: number) => void;
-  removeFromCart: (productId: number) => void;
-  updateQuantity: (productId: number, quantity: number) => void;
+  addToCart: (product: Product, quantity?: number, size?: string | null) => void;
+  removeFromCart: (productId: number, size?: string | null) => void;
+  updateQuantity: (productId: number, size: string | null, quantity: number) => void;
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
@@ -27,6 +28,10 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const STORAGE_KEY = "flove-cart";
+
+function isLine(item: CartItem, productId: number, size: string | null) {
+  return item.product.id === productId && (item.size ?? null) === size;
+}
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
@@ -50,32 +55,32 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   }, [items, isLoaded]);
 
-  function addToCart(product: Product, quantity = 1) {
+  function addToCart(product: Product, quantity = 1, size: string | null = null) {
     setItems((prev) => {
-      const existing = prev.find((item) => item.product.id === product.id);
+      const existing = prev.find((item) => isLine(item, product.id, size));
       if (existing) {
         return prev.map((item) =>
-          item.product.id === product.id
+          isLine(item, product.id, size)
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
-      return [...prev, { product, quantity }];
+      return [...prev, { product, quantity, size }];
     });
   }
 
-  function removeFromCart(productId: number) {
-    setItems((prev) => prev.filter((item) => item.product.id !== productId));
+  function removeFromCart(productId: number, size: string | null = null) {
+    setItems((prev) => prev.filter((item) => !isLine(item, productId, size)));
   }
 
-  function updateQuantity(productId: number, quantity: number) {
+  function updateQuantity(productId: number, size: string | null, quantity: number) {
     if (quantity < 1) {
-      removeFromCart(productId);
+      removeFromCart(productId, size);
       return;
     }
     setItems((prev) =>
       prev.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item
+        isLine(item, productId, size) ? { ...item, quantity } : item
       )
     );
   }

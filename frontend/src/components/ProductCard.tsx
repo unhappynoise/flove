@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Product, getImageUrl } from "@/lib/strapi";
+import { useRouter } from "next/navigation";
+import { Product, getImageUrl, parseSizes } from "@/lib/strapi";
 import { useCart } from "@/context/CartContext";
 
 export default function ProductCard({ product }: { product: Product }) {
   const { addToCart } = useCart();
+  const router = useRouter();
   const image = product.images?.[0];
   const hasDiscount = product.discountPrice && product.discountPrice < product.price;
   const inStock = product.stock == null || product.stock > 0;
@@ -15,6 +17,10 @@ export default function ProductCard({ product }: { product: Product }) {
     e.preventDefault();
     e.stopPropagation();
     if (!inStock) return;
+    if (parseSizes(product.sizes).length > 0) {
+      router.push(`/product/${product.slug}`);
+      return;
+    }
     addToCart(product, 1);
   }
 

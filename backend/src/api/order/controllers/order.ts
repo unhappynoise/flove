@@ -21,16 +21,6 @@ function parseSizes(sizes: string | null | undefined): string[] {
   return Array.from(new Set(out));
 }
 
-function parseColors(colors: string | null | undefined): string[] {
-  if (!colors) return [];
-  const out: string[] = [];
-  for (const raw of colors.split(',')) {
-    const token = raw.trim();
-    if (token) out.push(token);
-  }
-  return Array.from(new Set(out));
-}
-
 function itemLines(order: any): string {
   return (order.items || [])
     .map((i: any) => {
@@ -146,6 +136,7 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
 
       const product = await strapi.documents('api::product.product').findOne({
         documentId: item.productId,
+        populate: ['colors'],
       });
 
       if (!product) {
@@ -170,7 +161,7 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         size = chosen;
       }
 
-      const colorOptions = parseColors((product as any).color);
+      const colorOptions = ((product as any).colors || []).map((c: any) => c.name);
       let color: string | null = null;
       if (colorOptions.length > 0) {
         const chosen = String(item.color ?? '').trim();

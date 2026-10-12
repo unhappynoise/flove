@@ -40,9 +40,6 @@
     "sizes": {
       "type": "string"
     },
-    "color": {
-      "type": "string"
-    },
     "stock": {
       "type": "integer"
     },
@@ -73,6 +70,12 @@
         "on_request"
       ],
       "default": "ready"
+    },
+    "colors": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::color.color",
+      "inversedBy": "products"
     }
   }
 }

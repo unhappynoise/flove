@@ -65,6 +65,14 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::sub-type.sub-type"
+    },
+    "availability": {
+      "type": "enumeration",
+      "enum": [
+        "ready",
+        "on_request"
+      ],
+      "default": "ready"
     }
   }
 }

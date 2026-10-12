@@ -37,6 +37,11 @@ export default function Footer() {
                 Fragrances
               </Link>
             </li>
+            <li>
+              <Link href="/on-request" className="hover:text-gold-light transition-colors">
+                On Request
+              </Link>
+            </li>
           </ul>
         </div>
 

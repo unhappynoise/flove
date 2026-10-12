@@ -7,6 +7,10 @@ export const metadata: Metadata = { title: "FAQ | Flové" };
 
 const FAQS: { q: string; a: string }[] = [
   {
+    q: "What does On Request mean?",
+    a: "On Request items are pieces we have not yet confirmed with our supplier. You send a request with your size and details, we confirm availability and the final price, usually within 24 hours, and only then do we ask for payment through a secure payment link. If the item is unavailable, nothing is charged.",
+  },
+  {
     q: "How do I place an order?",
     a: "Browse the shop, add items to your cart and go to checkout. Enter your details and pay securely through Paystack. You will receive a confirmation email with your order reference.",
   },

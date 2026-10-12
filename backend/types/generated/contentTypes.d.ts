@@ -474,6 +474,50 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiCustomerRequestCustomerRequest
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'customer_requests';
+  info: {
+    displayName: 'Customer Request';
+    pluralName: 'customer-requests';
+    singularName: 'customer-request';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    customerEmail: Schema.Attribute.Email;
+    customerName: Schema.Attribute.String & Schema.Attribute.Required;
+    customerPhone: Schema.Attribute.String & Schema.Attribute.Required;
+    details: Schema.Attribute.Text;
+    kind: Schema.Attribute.Enumeration<['item', 'general']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'item'>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::customer-request.customer-request'
+    > &
+      Schema.Attribute.Private;
+    productId: Schema.Attribute.String;
+    productName: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    reference: Schema.Attribute.String & Schema.Attribute.Required;
+    size: Schema.Attribute.String;
+    status: Schema.Attribute.Enumeration<
+      ['new', 'confirmed', 'unavailable', 'paid', 'closed']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'new'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
   collectionName: 'orders';
   info: {
@@ -520,6 +564,8 @@ export interface ApiProductProduct extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
+    availability: Schema.Attribute.Enumeration<['ready', 'on_request']> &
+      Schema.Attribute.DefaultTo<'ready'>;
     bundleNote: Schema.Attribute.Text;
     category: Schema.Attribute.Relation<'manyToOne', 'api::category.category'>;
     color: Schema.Attribute.String;
@@ -1095,6 +1141,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::category.category': ApiCategoryCategory;
+      'api::customer-request.customer-request': ApiCustomerRequestCustomerRequest;
       'api::order.order': ApiOrderOrder;
       'api::product.product': ApiProductProduct;
       'api::sub-type.sub-type': ApiSubTypeSubType;

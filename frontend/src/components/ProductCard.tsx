@@ -12,6 +12,7 @@ export default function ProductCard({ product }: { product: Product }) {
   const image = product.images?.[0];
   const hasDiscount = product.discountPrice && product.discountPrice < product.price;
   const inStock = product.stock == null || product.stock > 0;
+  const onRequest = product.availability === "on_request";
 
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault();
@@ -46,7 +47,11 @@ export default function ProductCard({ product }: { product: Product }) {
               Sale
             </span>
           )}
-          {inStock ? (
+          {onRequest ? (
+            <span className="absolute bottom-3 right-3 bg-gold text-cream-light text-xs font-body uppercase tracking-wider px-3 py-2 rounded-sm">
+              On Request
+            </span>
+          ) : inStock ? (
             <button
               onClick={handleAddToCart}
               className="absolute bottom-3 right-3 bg-brown text-cream-light text-xs font-body uppercase tracking-wider px-3 py-2 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gold"

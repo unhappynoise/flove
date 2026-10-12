@@ -11,7 +11,6 @@ export default function ShippingReturnsPage() {
   return (
     <InfoPage
       title="Shipping, Returns & Refunds"
-      intro="Effective date: 12 October 2026"
     >
       <h2>1. How our orders work</h2>
       <p>
@@ -21,6 +20,16 @@ export default function ShippingReturnsPage() {
         item and size with our supplier and then arrange delivery. If an item
         turns out to be unavailable, we will contact you to offer an alternative
         or a refund of the amount you paid for it.
+      </p>
+
+      <p>
+        <strong className="text-brown">On Request items.</strong> Some items are
+        marked On Request. These are items we have not yet confirmed with our
+        supplier. You do not pay for them at checkout. Send a request instead, and
+        we will confirm availability, the final price and delivery details,
+        usually within 24 hours. We only ask for payment after the item is
+        confirmed, and we send you a secure payment link. If the item is not
+        available, nothing is charged.
       </p>
 
       <h2>2. Delivery and shipping</h2>

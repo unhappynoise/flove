@@ -44,6 +44,7 @@ export type Product = {
   sku: string | null;
   sub_type: SubType | null;
   bundleNote: string | null;
+  availability?: "ready" | "on_request" | null;
   images: StrapiImage[];
   category: Category;
 };

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Product, getImageUrl, parseSizes } from "@/lib/strapi";
 import { useCart } from "@/context/CartContext";
+import RequestForm from "@/components/RequestForm";
 
 export default function ProductDetails({ product }: { product: Product }) {
   const { addToCart } = useCart();
@@ -12,6 +13,7 @@ export default function ProductDetails({ product }: { product: Product }) {
   const sizeOptions = parseSizes(product.sizes);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const needsSize = sizeOptions.length > 0 && !selectedSize;
+  const isOnRequest = product.availability === "on_request";
 
   const hasDiscount =
     product.discountPrice && product.discountPrice < product.price;
@@ -96,7 +98,7 @@ export default function ProductDetails({ product }: { product: Product }) {
             )}
             <p className="text-brown-light">
               <span className="text-brown font-medium">Availability:</span>{" "}
-              {product.stock == null ? "Available" : product.stock > 0 ? `In stock (${product.stock} available)` : "Out of stock"}
+              {isOnRequest ? "On request - we confirm availability with our supplier" : product.stock == null ? "Available" : product.stock > 0 ? `In stock (${product.stock} available)` : "Out of stock"}
             </p>
           </div>
 
@@ -127,7 +129,7 @@ export default function ProductDetails({ product }: { product: Product }) {
             </div>
           )}
 
-          {(product.stock == null || product.stock > 0) && (
+          {!isOnRequest && (product.stock == null || product.stock > 0) && (
             <div className="flex items-center gap-4 mb-6">
               <span className="font-body text-sm text-brown">Quantity:</span>
               <div className="flex items-center border border-gold/30 rounded-sm">
@@ -152,11 +154,15 @@ export default function ProductDetails({ product }: { product: Product }) {
             </div>
           )}
 
+          {isOnRequest && (
+            <RequestForm product={product} sizeOptions={sizeOptions} selectedSize={selectedSize} />
+          )}
+
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleAddToCart}
               disabled={(product.stock != null && product.stock <= 0) || needsSize}
-              className="flex-1 text-center bg-brown text-cream-light font-body text-sm uppercase tracking-wider px-8 py-4 hover:bg-gold transition-colors rounded-sm disabled:opacity-40 disabled:cursor-not-allowed"
+              className={`${isOnRequest ? "hidden " : ""}flex-1 text-center bg-brown text-cream-light font-body text-sm uppercase tracking-wider px-8 py-4 hover:bg-gold transition-colors rounded-sm disabled:opacity-40 disabled:cursor-not-allowed`}
             >
               {added
                 ? "Added!"

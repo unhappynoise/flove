@@ -139,6 +139,10 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         return ctx.badRequest(`Product no longer available: ${item.productId}`);
       }
 
+      if ((product as any).availability === 'on_request') {
+        return ctx.badRequest(`${product.name} is available on request only. Please send a request instead.`);
+      }
+
       if (typeof product.stock === 'number' && product.stock < quantity) {
         return ctx.badRequest(`Not enough stock for ${product.name}`);
       }

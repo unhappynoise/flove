@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Terms & Privacy | Flové" };
 
 export default function TermsPage() {
   return (
-    <InfoPage title="Terms of Service & Privacy" intro="Effective date: 12 October 2026">
+    <InfoPage title="Terms of Service & Privacy">
       <h2>1. About these terms</h2>
       <p>
         These terms apply to your use of this website and to orders placed with
@@ -21,6 +21,12 @@ export default function TermsPage() {
         supplied, we will contact you to offer an alternative or a refund of the
         amount you paid for it. We may decline or cancel an order if we cannot
         fulfil it.
+      </p>
+
+      <p>
+        Items marked On Request are not paid for at checkout. We confirm
+        availability and the final price with our supplier first, and payment is
+        only requested once the item is confirmed.
       </p>
 
       <h2>3. Prices and payment</h2>

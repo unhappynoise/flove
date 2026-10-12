@@ -71,7 +71,7 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Plugin =>
         settings: {
           defaultSenderEmail: env('EMAIL_FROM'),
           defaultSenderName: 'Flové',
-          defaultReplyTo: env('EMAIL_FROM'),
+          defaultReplyTo: env('EMAIL_REPLY_TO', env('EMAIL_FROM')),
         },
       },
     },

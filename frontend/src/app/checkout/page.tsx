@@ -62,6 +62,7 @@ export default function CheckoutPage() {
           items: items.map((item) => ({
             productId: item.product.documentId,
             size: item.size ?? null,
+            color: item.color ?? null,
             quantity: item.quantity,
           })),
         }),
@@ -104,7 +105,11 @@ export default function CheckoutPage() {
                 className="flex justify-between font-body text-sm text-brown-light"
               >
                 <span>
-                  {item.product.name}{item.size ? ` (${item.size})` : ""} x{item.quantity}
+                  {item.product.name}
+                  {item.size || item.color
+                    ? ` (${[item.size, item.color].filter(Boolean).join(", ")})`
+                    : ""}{" "}
+                  x{item.quantity}
                 </span>
                 <span>GHS {price * item.quantity}</span>
               </div>

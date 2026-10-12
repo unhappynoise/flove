@@ -21,9 +21,22 @@ function parseSizes(sizes: string | null | undefined): string[] {
   return Array.from(new Set(out));
 }
 
+function parseColors(colors: string | null | undefined): string[] {
+  if (!colors) return [];
+  const out: string[] = [];
+  for (const raw of colors.split(',')) {
+    const token = raw.trim();
+    if (token) out.push(token);
+  }
+  return Array.from(new Set(out));
+}
+
 function itemLines(order: any): string {
   return (order.items || [])
-    .map((i: any) => `- ${i.name}${i.size ? ` (size ${i.size})` : ''} x${i.quantity} (GH₵${i.unitPrice} each)`)
+    .map((i: any) => {
+      const variant = [i.size ? `size ${i.size}` : null, i.color || null].filter(Boolean).join(', ');
+      return `- ${i.name}${variant ? ` (${variant})` : ''} x${i.quantity} (GH₵${i.unitPrice} each)`;
+    })
     .join('\n');
 }
 
@@ -103,7 +116,7 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         customerPhone?: string;
         deliveryAddress?: string;
         notes?: string;
-        items?: { productId: string; quantity: number; size?: string | null }[];
+        items?: { productId: string; quantity: number; size?: string | null; color?: string | null }[];
       };
 
     if (
@@ -157,6 +170,16 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         size = chosen;
       }
 
+      const colorOptions = parseColors((product as any).color);
+      let color: string | null = null;
+      if (colorOptions.length > 0) {
+        const chosen = String(item.color ?? '').trim();
+        if (!chosen || !colorOptions.includes(chosen)) {
+          return ctx.badRequest(`Please choose a valid color for ${product.name}`);
+        }
+        color = chosen;
+      }
+
       const unitPrice = Number(product.discountPrice ?? product.price);
 
       if (!unitPrice || unitPrice <= 0) {
@@ -168,6 +191,7 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
       orderItems.push({
         productId: product.documentId,
         size,
+        color,
         name: product.name,
         unitPrice,
         quantity,

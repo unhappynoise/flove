@@ -12,7 +12,7 @@ type OrderResult = {
   status: "pending" | "paid" | "failed";
   customerName: string;
   deliveryAddress: string;
-  items: { name: string; quantity: number; unitPrice: number; size?: string | null }[];
+  items: { name: string; quantity: number; unitPrice: number; size?: string | null; color?: string | null }[];
   totalAmount: number;
 };
 
@@ -195,7 +195,11 @@ function ConfirmationContent() {
             {order.items.map((item, i) => (
               <div key={i} className="flex justify-between font-body text-sm text-brown-light">
                 <span>
-                  {item.name}{item.size ? ` (${item.size})` : ""} x{item.quantity}
+                  {item.name}
+                  {item.size || item.color
+                    ? ` (${[item.size, item.color].filter(Boolean).join(", ")})`
+                    : ""}{" "}
+                  x{item.quantity}
                 </span>
                 <span>GHS {item.unitPrice * item.quantity}</span>
               </div>

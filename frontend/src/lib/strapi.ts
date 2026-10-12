@@ -133,3 +133,13 @@ export function parseSizes(sizes: string | null | undefined): string[] {
   }
   return Array.from(new Set(out));
 }
+
+export function parseColors(colors: string | null | undefined): string[] {
+  if (!colors) return [];
+  const out: string[] = [];
+  for (const raw of colors.split(",")) {
+    const token = raw.trim();
+    if (token) out.push(token);
+  }
+  return Array.from(new Set(out));
+}

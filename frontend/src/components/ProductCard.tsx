@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Product, getImageUrl, parseSizes } from "@/lib/strapi";
+import { Product, getImageUrl, parseSizes, parseColors } from "@/lib/strapi";
 import { useCart } from "@/context/CartContext";
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -18,7 +18,7 @@ export default function ProductCard({ product }: { product: Product }) {
     e.preventDefault();
     e.stopPropagation();
     if (!inStock) return;
-    if (parseSizes(product.sizes).length > 0) {
+    if (parseSizes(product.sizes).length > 0 || parseColors(product.color).length > 0) {
       router.push(`/product/${product.slug}`);
       return;
     }

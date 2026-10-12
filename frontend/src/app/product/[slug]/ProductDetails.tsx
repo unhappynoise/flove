@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Product, getImageUrl, parseSizes } from "@/lib/strapi";
+import { Product, getImageUrl, parseSizes, parseColors } from "@/lib/strapi";
 import { useCart } from "@/context/CartContext";
 import RequestForm from "@/components/RequestForm";
 
@@ -13,6 +13,9 @@ export default function ProductDetails({ product }: { product: Product }) {
   const sizeOptions = parseSizes(product.sizes);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const needsSize = sizeOptions.length > 0 && !selectedSize;
+  const colorOptions = parseColors(product.color);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const needsColor = colorOptions.length > 0 && !selectedColor;
   const isOnRequest = product.availability === "on_request";
 
   const hasDiscount =
@@ -20,8 +23,8 @@ export default function ProductDetails({ product }: { product: Product }) {
   const mainImage = product.images?.[0];
 
   function handleAddToCart() {
-    if (needsSize) return;
-    addToCart(product, quantity, selectedSize);
+    if (needsSize || needsColor) return;
+    addToCart(product, quantity, selectedSize, selectedColor);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   }
@@ -129,6 +132,33 @@ export default function ProductDetails({ product }: { product: Product }) {
             </div>
           )}
 
+          {colorOptions.length > 0 && (
+            <div className="mb-6">
+              <p className="font-body text-sm text-brown mb-2">
+                Color:{" "}
+                <span className="text-brown-light">
+                  {selectedColor ?? "Select a color"}
+                </span>
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {colorOptions.map((color) => (
+                  <button
+                    key={color}
+                    type="button"
+                    onClick={() => setSelectedColor(color)}
+                    className={`px-3 py-2 border rounded-sm font-body text-sm transition-colors ${
+                      selectedColor === color
+                        ? "bg-brown text-cream-light border-brown"
+                        : "border-gold/30 text-brown hover:border-gold"
+                    }`}
+                  >
+                    {color}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {!isOnRequest && (product.stock == null || product.stock > 0) && (
             <div className="flex items-center gap-4 mb-6">
               <span className="font-body text-sm text-brown">Quantity:</span>
@@ -161,7 +191,7 @@ export default function ProductDetails({ product }: { product: Product }) {
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleAddToCart}
-              disabled={(product.stock != null && product.stock <= 0) || needsSize}
+              disabled={(product.stock != null && product.stock <= 0) || needsSize || needsColor}
               className={`${isOnRequest ? "hidden " : ""}flex-1 text-center bg-brown text-cream-light font-body text-sm uppercase tracking-wider px-8 py-4 hover:bg-gold transition-colors rounded-sm disabled:opacity-40 disabled:cursor-not-allowed`}
             >
               {added
@@ -170,12 +200,14 @@ export default function ProductDetails({ product }: { product: Product }) {
                 ? "Out of Stock"
                 : needsSize
                 ? "Select a Size"
+                : needsColor
+                ? "Select a Color"
                 : "Add to Cart"}
             </button>
 
             <a
               href={`https://wa.me/233595999314?text=${encodeURIComponent(
-                `Hi Flové, I'm interested in the ${product.name}${selectedSize ? ` (size ${selectedSize})` : ""} (From GHS ${
+                `Hi Flové, I'm interested in the ${product.name}${selectedSize ? ` (size ${selectedSize})` : ""}${selectedColor ? ` (${selectedColor})` : ""} (From GHS ${
                   hasDiscount ? product.discountPrice : product.price
                 }).`
               )}`}

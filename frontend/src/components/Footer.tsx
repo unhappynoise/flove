@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="bg-charcoal text-cream-light mt-24">
-      <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div className="max-w-7xl mx-auto px-6 py-16 grid grid-cols-1 md:grid-cols-4 gap-12">
         <div>
           <h3 className="font-display text-2xl mb-3">Flové</h3>
           <p className="font-body text-sm text-cream-light/70 leading-relaxed">
@@ -35,6 +35,39 @@ export default function Footer() {
             <li>
               <Link href="/category/fragrances" className="hover:text-gold-light transition-colors">
                 Fragrances
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="font-body text-sm uppercase tracking-wider mb-4 text-gold-light">
+            Help
+          </h4>
+          <ul className="space-y-2 font-body text-sm text-cream-light/70">
+            <li>
+              <Link href="/about" className="hover:text-gold-light transition-colors">
+                About Us
+              </Link>
+            </li>
+            <li>
+              <Link href="/faq" className="hover:text-gold-light transition-colors">
+                FAQ
+              </Link>
+            </li>
+            <li>
+              <Link href="/shipping-returns" className="hover:text-gold-light transition-colors">
+                Shipping &amp; Returns
+              </Link>
+            </li>
+            <li>
+              <Link href="/terms" className="hover:text-gold-light transition-colors">
+                Terms &amp; Privacy
+              </Link>
+            </li>
+            <li>
+              <Link href="/contact" className="hover:text-gold-light transition-colors">
+                Contact
               </Link>
             </li>
           </ul>

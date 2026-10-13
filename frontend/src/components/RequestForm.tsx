@@ -12,10 +12,14 @@ export default function RequestForm({
   product,
   sizeOptions = [],
   selectedSize = null,
+  colorOptions = [],
+  selectedColors = [],
 }: {
   product?: Product;
   sizeOptions?: string[];
   selectedSize?: string | null;
+  colorOptions?: string[];
+  selectedColors?: string[];
 }) {
   const isItem = !!product;
   const [form, setForm] = useState({
@@ -42,6 +46,11 @@ export default function RequestForm({
       return;
     }
 
+    if (isItem && colorOptions.length > 0 && selectedColors.length === 0) {
+      setError("Please select a color above first.");
+      return;
+    }
+
     setSubmitting(true);
     try {
       const res = await fetch(`${STRAPI_URL}/api/customer-requests/submit`, {
@@ -52,6 +61,7 @@ export default function RequestForm({
           kind: isItem ? "item" : "general",
           productId: product?.documentId,
           size: selectedSize,
+          colors: selectedColors,
         }),
       });
       const data = await res.json();

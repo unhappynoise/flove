@@ -197,7 +197,13 @@ export default function ProductDetails({ product }: { product: Product }) {
           )}
 
           {isOnRequest && (
-            <RequestForm product={product} sizeOptions={sizeOptions} selectedSize={selectedSize} />
+            <RequestForm
+              product={product}
+              sizeOptions={sizeOptions}
+              selectedSize={selectedSize}
+              colorOptions={colorOptions}
+              selectedColors={selectedColors}
+            />
           )}
 
           <div className="flex flex-col sm:flex-row gap-3">

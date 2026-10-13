@@ -49,10 +49,12 @@ export default factories.createCoreController(
       let productId: string | null = null;
       let productName: string | null = null;
       let size: string | null = null;
+      let colors: string | null = null;
 
       if (kind === 'item') {
         const product = await strapi.documents('api::product.product').findOne({
           documentId: String(body.productId || ''),
+          populate: ['colors'],
         });
         if (!product) {
           return ctx.badRequest('That item is no longer available to request');
@@ -67,6 +69,18 @@ export default factories.createCoreController(
             return ctx.badRequest(`Please choose a valid size for ${product.name}`);
           }
           size = chosen;
+        }
+
+        const colorOptions = ((product as any).colors || []).map((c: any) => c.name);
+        if (colorOptions.length > 0) {
+          const chosenColors = Array.isArray(body.colors)
+            ? body.colors.map((c: any) => String(c).trim()).filter(Boolean)
+            : [];
+          const uniqueChosen = Array.from(new Set(chosenColors));
+          if (uniqueChosen.length === 0 || !uniqueChosen.every((c) => colorOptions.includes(c))) {
+            return ctx.badRequest(`Please choose a valid color for ${product.name}`);
+          }
+          colors = uniqueChosen.join(', ');
         }
       }
 
@@ -83,6 +97,7 @@ export default factories.createCoreController(
           productId: productId || undefined,
           productName: productName || undefined,
           size: size || undefined,
+          colors: colors || undefined,
           details: details || undefined,
         },
       });
@@ -90,7 +105,7 @@ export default factories.createCoreController(
       const emailService = strapi.plugin('email').service('email');
       const what =
         kind === 'item'
-          ? `${productName}${size ? ` (size ${size})` : ''}`
+          ? `${productName}${size ? ` (size ${size})` : ''}${colors ? ` (${colors})` : ''}`
           : 'General request';
 
       try {

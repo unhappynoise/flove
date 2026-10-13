@@ -6,18 +6,61 @@
     "pluralName": "customer-requests",
     "displayName": "Customer Request"
   },
-  "options": { "draftAndPublish": false },
+  "options": {
+    "draftAndPublish": false
+  },
   "pluginOptions": {},
   "attributes": {
-    "reference": { "type": "string", "required": true },
-    "kind": { "type": "enumeration", "enum": ["item", "general"], "default": "item", "required": true },
-    "status": { "type": "enumeration", "enum": ["new", "confirmed", "unavailable", "paid", "closed"], "default": "new", "required": true },
-    "customerName": { "type": "string", "required": true },
-    "customerPhone": { "type": "string", "required": true },
-    "customerEmail": { "type": "email" },
-    "productId": { "type": "string" },
-    "productName": { "type": "string" },
-    "size": { "type": "string" },
-    "details": { "type": "text" }
+    "reference": {
+      "type": "string",
+      "required": true
+    },
+    "kind": {
+      "type": "enumeration",
+      "enum": [
+        "item",
+        "general"
+      ],
+      "default": "item",
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "new",
+        "confirmed",
+        "unavailable",
+        "paid",
+        "closed"
+      ],
+      "default": "new",
+      "required": true
+    },
+    "customerName": {
+      "type": "string",
+      "required": true
+    },
+    "customerPhone": {
+      "type": "string",
+      "required": true
+    },
+    "customerEmail": {
+      "type": "email"
+    },
+    "productId": {
+      "type": "string"
+    },
+    "productName": {
+      "type": "string"
+    },
+    "size": {
+      "type": "string"
+    },
+    "colors": {
+      "type": "string"
+    },
+    "details": {
+      "type": "text"
+    }
   }
 }

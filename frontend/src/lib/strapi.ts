@@ -29,6 +29,13 @@ export type SubType = {
   category?: Category;
 };
 
+export type Color = {
+  id: number;
+  documentId: string;
+  name: string;
+  hexCode: string | null;
+};
+
 export type Product = {
   id: number;
   documentId: string;
@@ -38,7 +45,7 @@ export type Product = {
   price: number;
   discountPrice: number | null;
   sizes: string | null;
-  color: string | null;
+  colors: Color[] | null;
   stock: number | null;
   featured: boolean;
   sku: string | null;
@@ -80,7 +87,7 @@ async function fetchAll<T>(path: string): Promise<T[]> {
   return all;
 }
 
-const PRODUCT_POPULATE = "populate=images,category,sub_type";
+const PRODUCT_POPULATE = "populate=images,category,sub_type,colors";
 
 export async function getProducts(): Promise<Product[]> {
   return fetchAll<Product>(`/api/products?${PRODUCT_POPULATE}`);
@@ -134,12 +141,4 @@ export function parseSizes(sizes: string | null | undefined): string[] {
   return Array.from(new Set(out));
 }
 
-export function parseColors(colors: string | null | undefined): string[] {
-  if (!colors) return [];
-  const out: string[] = [];
-  for (const raw of colors.split(",")) {
-    const token = raw.trim();
-    if (token) out.push(token);
-  }
-  return Array.from(new Set(out));
-}
+

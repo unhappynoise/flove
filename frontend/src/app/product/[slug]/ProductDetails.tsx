@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Product, getImageUrl, parseSizes, parseColors } from "@/lib/strapi";
+import { Product, getImageUrl, parseSizes } from "@/lib/strapi";
 import { useCart } from "@/context/CartContext";
 import RequestForm from "@/components/RequestForm";
 
@@ -13,9 +13,15 @@ export default function ProductDetails({ product }: { product: Product }) {
   const sizeOptions = parseSizes(product.sizes);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const needsSize = sizeOptions.length > 0 && !selectedSize;
-  const colorOptions = parseColors(product.color);
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const needsColor = colorOptions.length > 0 && !selectedColor;
+  const colorOptions = (product.colors ?? []).map((c) => c.name);
+  const [selectedColors, setSelectedColors] = useState<string[]>([]);
+  const needsColor = colorOptions.length > 0 && selectedColors.length === 0;
+
+  function toggleColor(color: string) {
+    setSelectedColors((prev) =>
+      prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]
+    );
+  }
   const isOnRequest = product.availability === "on_request";
 
   const hasDiscount =
@@ -24,7 +30,13 @@ export default function ProductDetails({ product }: { product: Product }) {
 
   function handleAddToCart() {
     if (needsSize || needsColor) return;
-    addToCart(product, quantity, selectedSize, selectedColor);
+    if (selectedColors.length > 0) {
+      for (const color of selectedColors) {
+        addToCart(product, quantity, selectedSize, color);
+      }
+    } else {
+      addToCart(product, quantity, selectedSize, null);
+    }
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   }
@@ -93,12 +105,6 @@ export default function ProductDetails({ product }: { product: Product }) {
                 {product.sizes}
               </p>
             )}
-            {product.color && (
-              <p className="text-brown-light">
-                <span className="text-brown font-medium">Color:</span>{" "}
-                {product.color}
-              </p>
-            )}
             <p className="text-brown-light">
               <span className="text-brown font-medium">Availability:</span>{" "}
               {isOnRequest ? "On request - we confirm availability with our supplier" : product.stock == null ? "Available" : product.stock > 0 ? `In stock (${product.stock} available)` : "Out of stock"}
@@ -135,19 +141,25 @@ export default function ProductDetails({ product }: { product: Product }) {
           {colorOptions.length > 0 && (
             <div className="mb-6">
               <p className="font-body text-sm text-brown mb-2">
-                Color:{" "}
+                Color{selectedColors.length > 1 ? "s" : ""}:{" "}
                 <span className="text-brown-light">
-                  {selectedColor ?? "Select a color"}
+                  {selectedColors.length > 0
+                    ? selectedColors.join(", ")
+                    : "Select one or more colors"}
                 </span>
+              </p>
+              <p className="font-body text-xs text-taupe mb-2">
+                Pick more than one if you want several colors added to your cart.
               </p>
               <div className="flex flex-wrap gap-2">
                 {colorOptions.map((color) => (
                   <button
                     key={color}
                     type="button"
-                    onClick={() => setSelectedColor(color)}
+                    onClick={() => toggleColor(color)}
+                    aria-pressed={selectedColors.includes(color)}
                     className={`px-3 py-2 border rounded-sm font-body text-sm transition-colors ${
-                      selectedColor === color
+                      selectedColors.includes(color)
                         ? "bg-brown text-cream-light border-brown"
                         : "border-gold/30 text-brown hover:border-gold"
                     }`}
@@ -207,7 +219,7 @@ export default function ProductDetails({ product }: { product: Product }) {
 
             <a
               href={`https://wa.me/233595999314?text=${encodeURIComponent(
-                `Hi Flové, I'm interested in the ${product.name}${selectedSize ? ` (size ${selectedSize})` : ""}${selectedColor ? ` (${selectedColor})` : ""} (From GHS ${
+                `Hi Flové, I'm interested in the ${product.name}${selectedSize ? ` (size ${selectedSize})` : ""}${selectedColors.length > 0 ? ` (${selectedColors.join(", ")})` : ""} (From GHS ${
                   hasDiscount ? product.discountPrice : product.price
                 }).`
               )}`}

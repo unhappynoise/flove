@@ -11,13 +11,18 @@ export default function ProductDetails({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const sizeOptions = parseSizes(product.sizes);
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string | null>(
+    sizeOptions.length === 1 ? sizeOptions[0] : null
+  );
   const needsSize = sizeOptions.length > 0 && !selectedSize;
   const colorOptions = (product.colors ?? []).map((c) => c.name);
-  const [selectedColors, setSelectedColors] = useState<string[]>([]);
+  const [selectedColors, setSelectedColors] = useState<string[]>(
+    colorOptions.length === 1 ? [colorOptions[0]] : []
+  );
   const needsColor = colorOptions.length > 0 && selectedColors.length === 0;
 
   function toggleColor(color: string) {
+    if (colorOptions.length === 1) return;
     setSelectedColors((prev) =>
       prev.includes(color) ? prev.filter((c) => c !== color) : [...prev, color]
     );

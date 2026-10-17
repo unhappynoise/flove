@@ -18,11 +18,13 @@ export default function ProductCard({ product }: { product: Product }) {
     e.preventDefault();
     e.stopPropagation();
     if (!inStock) return;
-    if (parseSizes(product.sizes).length > 0 || (product.colors?.length ?? 0) > 0) {
+    const sizeOptions = parseSizes(product.sizes);
+    const colorNames = (product.colors ?? []).map((c) => c.name);
+    if (sizeOptions.length > 1 || colorNames.length > 1) {
       router.push(`/product/${product.slug}`);
       return;
     }
-    addToCart(product, 1);
+    addToCart(product, 1, sizeOptions[0] ?? null, colorNames[0] ?? null);
   }
 
   return (
